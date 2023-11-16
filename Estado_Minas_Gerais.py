@@ -1,5 +1,6 @@
 import requests
 import re
+import traceback
 
 # Lista de URLs a serem analisadas
 listaURLs = ['https://desaparecidos.policiacivil.mg.gov.br/desaparecido/album']
@@ -9,6 +10,7 @@ listaAlbum = []
 regexLink = r'\/desaparecido\/exibir\/\d{4}'  # Regex para encontrar link
 regexDados = r'<dl>(.*?)<\/dl>' # Regex para encontrar campo que engloba todos os dados (label + dado)
 regexDadosEspecificos = r'(<dd>(.*?)<\/dd>)' # Regex para encontrar os dados (sem label)
+regexImagem = r'\/arquivo\/downloadArquivo(.*\w)'
 tagHTML = r'(<(.*?)>)' # Regex para encontrar tags HTML
 regexCampos = r'(Nome|Data|Idade|Cidade)' # Regex para encontrar as labels dos dados
 
@@ -71,6 +73,7 @@ for listaAlbumURLs in listaAlbum: # Página individual
                 htmlReduzido = str(retornoRegexDados) # String contendo apenas a parte de interesse do HTML (acelerar busca)
 
                 labelDados = re.findall(regexCampos, htmlReduzido) # Lista label das informações disponíveis
+                linkImagem = 'https://desaparecidos.policiacivil.mg.gov.br/arquivo/downloadArquivo' + re.findall(regexImagem, conteudoPagina)[0] # Link da imagem
 
                 # Formatar labels
                 for label in labelDados:
@@ -93,6 +96,7 @@ for listaAlbumURLs in listaAlbum: # Página individual
                 Pessoa = {}
                 for index in range(len(labelDados)):
                     Pessoa[labelDados[index]] = dadosPessoa[index]
+                Pessoa["linkImagem"] = linkImagem
 
                 listaPessoas.append(Pessoa)
                 arquivoDados.write(f'{Pessoa}\n')
@@ -101,9 +105,10 @@ for listaAlbumURLs in listaAlbum: # Página individual
                 # Se nenhum resultado for encontrado, imprimir uma mensagem
                 print(f"Nenhum resultado encontrado para a URL {listaAlbumURLs}")
 
-        except:
+        except Exception:
             # Se houver algum erro na aplicação da regex, registrar que houve uma extração incorreta para essa URL
             print(f"Extração incorreta para a URL {listaAlbumURLs}")
+            #traceback.print_exc()
     else:
         # Se a resposta não for 200, imprimir uma mensagem de erro de requisição para a URL atual
         print(f"Erro na requisição da URL {listaAlbumURLs} - Status: {resposta.status_code}")

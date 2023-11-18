@@ -1,17 +1,19 @@
 import requests
 import re
 import traceback
+import html
 
 # Lista de URLs a serem analisadas
-listaURLs = ['https://www.ssp.ma.gov.br/disque-denuncia/desaparecidos/']
+listaURLs = ['https://www.policiacivil.se.gov.br/desaparecidos/']
 listaAlbum = []
-labelDados = ['nome', 'dataDesaparecimento', 'idadeDesaparecimento', 'localDesaparecimento', 'linkImagem']
+labelDados = ['nome', 'dataNascimento', 'localDesaparecimento', 'dataDesaparecimento', 'numeroBO', 'linkImagem', 'idadeDesaparecimento']
 
 # Regexs a serem aplicadas
-regexDados = r'<div class=\"gg_img(.*?)<\/div>'
-regexNome = r'data-gg-title=\"(.*?)(\-|\")' # Regex para encontrar campo que engloba todos os dados (label + dado)
-regexImagem = r'data-gg-url=\"(.*?)\"' # Regex para encontrar os dados (sem label)
-tagHTML = r'(<(.*?)>)' # Regex para encontrar tags HTML
+regexAreaDeInteresse = r'\"card\"(.*?)<\/section>'
+regexDados = r'<p>(.*?)<\/p>'
+regexDadosEspecificos = r'(<\/strong>\s*(.*?)<)'
+regexLabels = r'<strong>(.*?)<\/strong>'
+regexImagem = r'src=\"(.*?)\"' # Regex para encontrar os dados (sem label)
 
 
 # Encontrar páginas individuais
@@ -21,12 +23,12 @@ for cadaURL in listaURLs:
 
     # Verificar se a requisição foi bem-sucedida
     if resposta.status_code == 200:
-        conteudoPagina = resposta.content.decode('utf-8')
+        conteudoPagina = html.unescape(resposta.content.decode('UTF-8'))
         #arquivoDeLinks = open("links.txt", "w")
 
         try:
             # Aplicar a regex sobre o conteúdo da página
-            retornoRegexDados = re.findall(regexDados, conteudoPagina, re.S)
+            retornoRegexDados = re.findall(regexAreaDeInteresse, conteudoPagina, re.S)
             #arquivoDeLinks.write('\n'.join(retornoRegexLink))
 
             # Verificar se foram encontrados resultados
@@ -37,21 +39,25 @@ for cadaURL in listaURLs:
                 print(f"Processando...")
                 arquivoDados = open("dados.txt", "a")
                 listaPessoas = [] # Pessoas desaparecidas
-                Pessoa = {} # Pessoa individual
 
                 listaIndividuos = str(retornoRegexDados.copy())
-                retornoRegexNome = re.findall(regexNome, listaIndividuos, re.S)
+                retornoRegexDados = re.findall(regexDados, listaIndividuos)
+                retornoRegexLabels = re.findall(regexLabels, str(retornoRegexDados))
+                dados = re.findall(regexDadosEspecificos, ''.join(retornoRegexDados))
+                    
                 retornoRegexImagem = re.findall(regexImagem, listaIndividuos, re.S)
-
-                for index in range(len(retornoRegexNome)):
-                    Pessoa['name'] = retornoRegexNome[index][0]
-                    Pessoa['dataDesaparecimento'] = ""
-                    Pessoa['idadeDesaparecimento'] = ""
-                    Pessoa['localDesaparecimento'] = ""
+                qtdCampos = int(len(retornoRegexLabels)/len(retornoRegexImagem))
+                
+                for index in range(len(retornoRegexImagem)):
+                    Pessoa = {}
+                    for indexDado in range(qtdCampos-1):
+                        Pessoa[labelDados[indexDado]] = dados[indexDado][1]
                     Pessoa['linkImagem'] = retornoRegexImagem[index]
+                    Pessoa['idadeDesaparecimento'] = ""
+
                     listaPessoas.append(Pessoa)
                     arquivoDados.write(f'{Pessoa}\n')
-                
+    
                 arquivoDados.close()
 
         except:

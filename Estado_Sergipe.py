@@ -42,19 +42,23 @@ for cadaURL in listaURLs:
 
                 listaIndividuos = str(retornoRegexDados.copy())
                 retornoRegexDados = re.findall(regexDados, listaIndividuos)
-                retornoRegexLabels = re.findall(regexLabels, str(retornoRegexDados))
-                dados = re.findall(regexDadosEspecificos, ''.join(retornoRegexDados))
+                retornoRegexLabels = re.findall(regexLabels, str(retornoRegexDados)) # Labels usados pelo site
+                dados = re.findall(regexDadosEspecificos, ''.join(retornoRegexDados)) # Lista contendo todos os dados encontrados
                     
                 retornoRegexImagem = re.findall(regexImagem, listaIndividuos, re.S)
-                qtdCampos = int(len(retornoRegexLabels)/len(retornoRegexImagem))
+                qtdCampos = int(len(retornoRegexLabels)/len(retornoRegexImagem)) # Quantidade de dados que representam uma pessoa na lista de dados
                 
-                for index in range(len(retornoRegexImagem)):
+                indexDado = 0 # Percorre a lista dados
+                for index in range(len(retornoRegexImagem)): # 1 link = 1 pessoa
                     Pessoa = {}
-                    for indexDado in range(qtdCampos-1):
-                        Pessoa[labelDados[indexDado]] = dados[indexDado][1]
+
+                    for indexFor in range(qtdCampos-1):
+                        Pessoa[labelDados[indexFor]] = dados[indexDado][1]
+                        indexDado+=1
+                    indexDado+=1 # Ignora campo "Informações"
+
                     Pessoa['linkImagem'] = retornoRegexImagem[index]
                     Pessoa['idadeDesaparecimento'] = ""
-
                     listaPessoas.append(Pessoa)
                     arquivoDados.write(f'{Pessoa}\n')
     
@@ -64,7 +68,6 @@ for cadaURL in listaURLs:
             # Se houver algum erro na aplicação da regex, registrar que houve uma extração incorreta para essa URL
             print(f"Extração incorreta para a URL {cadaURL}")
     
-        #arquivoDeLinks.close
     else:
         # Se a resposta não for 200, imprimir uma mensagem de erro de requisição para a URL atual
         print(f"Erro na requisição da URL {cadaURL} - Status: {resposta.status_code}")

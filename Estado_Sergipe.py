@@ -2,6 +2,7 @@ import requests
 import re
 import traceback
 import html
+import json
 
 # Lista de URLs a serem analisadas
 listaURLs = ['https://www.policiacivil.se.gov.br/desaparecidos/']
@@ -60,9 +61,11 @@ for cadaURL in listaURLs:
                     Pessoa['linkImagem'] = retornoRegexImagem[index]
                     Pessoa['idadeDesaparecimento'] = ""
                     listaPessoas.append(Pessoa)
-                    arquivoDados.write(f'{Pessoa}\n')
+                    #arquivoDados.write(f'{Pessoa}\n')
     
                 arquivoDados.close()
+                with open('dados.json', 'a', encoding='utf-8') as f:
+                    json.dump(listaPessoas, f, ensure_ascii=False, indent=4)
 
         except:
             # Se houver algum erro na aplicação da regex, registrar que houve uma extração incorreta para essa URL

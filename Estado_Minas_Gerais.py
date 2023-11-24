@@ -1,6 +1,8 @@
 import requests
 import re
 import traceback
+import html
+import json
 
 # Lista de URLs a serem analisadas
 listaURLs = ['https://desaparecidos.policiacivil.mg.gov.br/desaparecido/album']
@@ -22,7 +24,7 @@ for cadaURL in listaURLs:
 
     # Verificar se a requisição foi bem-sucedida
     if resposta.status_code == 200:
-        conteudoPagina = resposta.content.decode('utf-8')
+        conteudoPagina = html.unescape(resposta.content.decode('utf-8'))
         #arquivoDeLinks = open("links.txt", "w")
 
         try:
@@ -50,7 +52,7 @@ listaAlbum = retornoRegexLink.copy() # Lista com todas as páginas individuais
 for i in range(len(listaAlbum)):
     listaAlbum[i] = 'https://desaparecidos.policiacivil.mg.gov.br' + listaAlbum[i]
 
-arquivoDados = open("dados.txt", "w")
+arquivoDados = open("dados.txt", "a")
 print(f"Processando...")
 
 listaPessoas = [] # Pessoas desaparecidas
@@ -99,7 +101,7 @@ for listaAlbumURLs in listaAlbum: # Página individual
                 Pessoa["linkImagem"] = linkImagem
 
                 listaPessoas.append(Pessoa)
-                arquivoDados.write(f'{Pessoa}\n')
+                #arquivoDados.write(f'{Pessoa}\n')
 
             else:
                 # Se nenhum resultado for encontrado, imprimir uma mensagem
@@ -114,4 +116,10 @@ for listaAlbumURLs in listaAlbum: # Página individual
         print(f"Erro na requisição da URL {listaAlbumURLs} - Status: {resposta.status_code}")
 
 arquivoDados.close()
+
+print("Salvando Dados...")
+print(listaPessoas)
+with open('dados.json', 'a', encoding='utf-8') as f:
+    json.dump(listaPessoas, f, ensure_ascii=False, indent=4)
+
 print("Extração de dados concluída!")

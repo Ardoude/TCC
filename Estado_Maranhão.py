@@ -1,6 +1,8 @@
 import requests
 import re
 import traceback
+import html
+import json
 
 # Lista de URLs a serem analisadas
 listaURLs = ['https://www.ssp.ma.gov.br/disque-denuncia/desaparecidos/']
@@ -21,7 +23,7 @@ for cadaURL in listaURLs:
 
     # Verificar se a requisição foi bem-sucedida
     if resposta.status_code == 200:
-        conteudoPagina = resposta.content.decode('utf-8')
+        conteudoPagina = html.unescape(resposta.content.decode('utf-8'))
         #arquivoDeLinks = open("links.txt", "w")
 
         try:
@@ -50,7 +52,9 @@ for cadaURL in listaURLs:
                     Pessoa['localDesaparecimento'] = ""
                     Pessoa['linkImagem'] = retornoRegexImagem[index]
                     listaPessoas.append(Pessoa)
-                    arquivoDados.write(f'{Pessoa}\n')
+                    with open('dados.json', 'a', encoding='utf-8') as f:
+                        json.dump(listaPessoas, f, ensure_ascii=False, indent=4)
+                    #arquivoDados.write(f'{Pessoa}\n')
                 
                 arquivoDados.close()
 

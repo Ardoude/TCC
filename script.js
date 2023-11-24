@@ -23,6 +23,7 @@ const createCard = (dado) => {
     const dataDesaparecimento = dado['dataDesaparecimento']
     const idadeDesaparecimento = dado['idadeDesaparecimento']
     const localDesaparecimento = dado['localDesaparecimento']
+    const estado = dado['estado']
     const linkImagem = dado['linkImagem']
 
     let cardElement = `
@@ -34,6 +35,7 @@ const createCard = (dado) => {
             <span class="label">Data desaparecimento: ${dataDesaparecimento}</span>
             <span class="label">Idade: ${idadeDesaparecimento}</span>
             <span class="label">Última vez visto em: ${localDesaparecimento}</span>
+            <span class="label">Estado: ${estado}</span>
         </div>
 `
 

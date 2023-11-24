@@ -53,10 +53,11 @@ def extrair():
                     for index in range(len(retornoRegexImagem)):
                         Pessoa = {} # Pessoa individual
                         
-                        Pessoa['name'] = nomes[index]
+                        Pessoa['nome'] = nomes[index]
                         Pessoa['dataDesaparecimento'] = ""
                         Pessoa['idadeDesaparecimento'] = ""
                         Pessoa['localDesaparecimento'] = ""
+                        Pessoa['estado'] = "Pernambuco/PE"
                         Pessoa['linkImagem'] = 'http://www.policiacivil.pe.gov.br' + retornoRegexImagem[index]
                         listaPessoas.append(Pessoa)
 

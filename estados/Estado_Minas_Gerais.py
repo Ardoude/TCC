@@ -95,6 +95,7 @@ def extrair():
                     Pessoa = {}
                     for index in range(len(labelDados)):
                         Pessoa[labelDados[index]] = dadosPessoa[index]
+                    Pessoa["estado"] = "Minas Gerais/MG"
                     Pessoa["linkImagem"] = linkImagem
                     listaPessoas.append(Pessoa)
 

@@ -56,6 +56,7 @@ def extrair():
                             indexDado+=1
                         indexDado+=1 # Ignora campo "Informações"
 
+                        Pessoa['estado'] = "Sergipe/SE"
                         Pessoa['linkImagem'] = retornoRegexImagem[index]
                         Pessoa['idadeDesaparecimento'] = ""
                         listaPessoas.append(Pessoa)

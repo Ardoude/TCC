@@ -1,5 +1,47 @@
 body {
     font-family: Arial, sans-serif;
+    background: #bcb28a;
+    margin: 0;
+}
+
+.search-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+.header{
+    position: sticky;
+    background: #bcb28a;
+    display: flex;
+    width: 100%;
+    top: 0;
+    z-index: 2;
+    border: 1px solid gray;
+}
+
+#search {
+    width: 100%;
+    padding: 10px;
+    padding-right: 25px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+form {
+    position: relative;
+    display: flex;
+    width: 500px;
+}
+
+.search-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #666;
+    font-size: 18px;
 }
 
 .card {
@@ -7,12 +49,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
     max-width: 300px;
     max-height: 350px;
     height: 250;
     width: 200px;
-    margin: 0 auto;
+    margin: 2px;
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #ddd;
@@ -27,6 +68,7 @@ body {
 .card:hover {
     transform: scale(1.4);
     z-index: 1;
+    border: 2px solid black;
     .imagem{
         transform: scale(1.15);    
     };
@@ -37,6 +79,8 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     margin: 5%;
+    margin-top: 50px;
+    background: #bcb28a;
 }
 
 .label {

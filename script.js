@@ -8,7 +8,6 @@ async function carrega(){
     .then(json => {
         dados = json;
     })
-
     
     dados.forEach(dado => {
         createCard(dado)
@@ -28,7 +27,7 @@ const createCard = (dado) => {
 
     let cardElement = `
         <figure>
-            <img src="${linkImagem}" alt="Imagem" class="imagem">
+            <a href="${linkImagem}" target="_blank" rel="noopener noreferrer"><img src="${linkImagem}" alt="Imagem/PDF" class="imagem"></a>
         </figure>
         <div class="info">
             <span class="label">Nome: ${nome}</span>
@@ -39,7 +38,6 @@ const createCard = (dado) => {
 `
 
     card.innerHTML = cardElement
-    console.log(card)
     container.appendChild(card)
 }
 

@@ -28,7 +28,7 @@ const createCard = (dado) => {
 
     let cardElement = `
         <figure>
-            <a href="${linkImagem}" target="_blank" rel="noopener noreferrer"><img src="${linkImagem}" alt="Imagem/PDF" class="imagem"></a>
+            <a href="${linkImagem}" target="_blank" rel="noopener noreferrer"><img src="${linkImagem}" alt="Visualizar Imagem ou PDF" class="imagem"></a>
         </figure>
         <div class="info">
             <span class="label">Nome: ${nome}</span>
@@ -54,6 +54,16 @@ const search = (input) => {
         
         if(aux){
             resultado.push(entry)
+        }else{
+            aux = entry && entry.localDesaparecimento && entry.localDesaparecimento.toUpperCase().indexOf(input)!==-1
+            if(aux){
+                resultado.push(entry)
+            }else{
+                aux = entry && entry.estado && entry.estado.toUpperCase().indexOf(input)!==-1
+                if(aux){
+                    resultado.push(entry)
+                }
+            }
         }
     });
 
